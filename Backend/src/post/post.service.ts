@@ -14,6 +14,8 @@ import { TagService } from 'src/tag/tag.service';
 import { Vote, VoteType } from 'src/vote/vote.entity';
 import { SearchDto } from './dto/search.dto';
 import { PostResponseDto } from './dto/post-response.dto';
+import { BlobServiceClient } from '@azure/storage-blob';
+import { extname } from 'path';
 
 @Injectable()
 export class PostService {
@@ -30,13 +32,37 @@ export class PostService {
   async createPost(
     user: User,
     dto: CreatePostDto,
-    filename: string,
+    file: Express.Multer.File,
   ): Promise<any> {
     const tags = await this.tagService.findOrCreateTags(dto.tags);
 
+    const AZURE_STORAGE_CONNECTION_STRING = process.env.AZURE_STORAGE_CONNECTION_STRING;
+    const containerName = process.env.AZURE_STORAGE_CONTAINER_NAME || 'posts-images';
+
+    let imageUrl = '';
+    if (file) {
+      if (!AZURE_STORAGE_CONNECTION_STRING) {
+        throw new Error('Azure Storage connection string is not configured.');
+      }
+      const blobServiceClient = BlobServiceClient.fromConnectionString(AZURE_STORAGE_CONNECTION_STRING);
+      const containerClient = blobServiceClient.getContainerClient(containerName);
+      
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+      const ext = extname(file.originalname);
+      const blobName = `post-${uniqueSuffix}${ext}`;
+      
+      const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+      
+      await blockBlobClient.uploadData(file.buffer, {
+        blobHTTPHeaders: { blobContentType: file.mimetype }
+      });
+      
+      imageUrl = blockBlobClient.url;
+    }
+
     const post = this.postRepository.create({
       title: dto.title,
-      imageUrl: `/uploads/${filename}`,
+      imageUrl: imageUrl,
       tags: tags,
       author: { id: user.id },
       upvoteCount: 0,
@@ -250,17 +276,38 @@ export class PostService {
       throw new ForbiddenException('You are not allowed to delete this post');
     }
 
-    const filePath = path.join(
-      '/home/dietideals/Scrivania/UploadsBizment',
-      path.basename(post.imageUrl),
-    );
-
-    try {
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
+    if (post.imageUrl && post.imageUrl.includes('blob.core.windows.net')) {
+      try {
+        const AZURE_STORAGE_CONNECTION_STRING = process.env.AZURE_STORAGE_CONNECTION_STRING;
+        const containerName = process.env.AZURE_STORAGE_CONTAINER_NAME || 'posts-images';
+        if (AZURE_STORAGE_CONNECTION_STRING) {
+          const blobServiceClient = BlobServiceClient.fromConnectionString(AZURE_STORAGE_CONNECTION_STRING);
+          const containerClient = blobServiceClient.getContainerClient(containerName);
+          
+          const urlParts = new URL(post.imageUrl);
+          const pathSegments = urlParts.pathname.split('/');
+          const blobName = decodeURIComponent(pathSegments[pathSegments.length - 1]);
+          
+          const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+          await blockBlobClient.deleteIfExists();
+        }
+      } catch (err) {
+        console.error('Errore durante la cancellazione del file da Azure:', err);
       }
-    } catch (err) {
-      console.error('Errore durante la cancellazione del file:', err);
+    } else if (post.imageUrl) {
+      // Fallback in caso avessi ancora immagini salvate in locale nei vecchi DB
+      const filePath = path.join(
+        '/home/dietideals/Scrivania/UploadsBizment',
+        path.basename(post.imageUrl),
+      );
+
+      try {
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
+      } catch (err) {
+        console.error('Errore durante la cancellazione del file in locale:', err);
+      }
     }
 
     await this.postRepository.delete({

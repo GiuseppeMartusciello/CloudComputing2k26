@@ -35,7 +35,7 @@ export class PostController {
     @Body() dto: CreatePostDto,
     @GetUser() user: User,
   ): Promise<any> {
-    return this.postService.createPost(user, dto, file.filename);
+    return this.postService.createPost(user, dto, file);
   }
 
   @UseGuards(JwtOptionalAuthGuard)

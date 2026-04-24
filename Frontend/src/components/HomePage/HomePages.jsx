@@ -29,7 +29,7 @@ export default function HomePage({
           title={post.title}
           author={post.author}
           date={post.createdAt}
-          imageUrl={/* TO-DO: Cambiare l'indirizzo */  + post.imageUrl}
+          imageUrl={post.imageUrl}
           tags={post.tags}
           likes={post.upvote}
           dislikes={post.downvote}
