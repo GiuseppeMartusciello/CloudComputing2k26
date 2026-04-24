@@ -1,0 +1,93 @@
+.app-navbar {
+  background-color: #1f2125;
+  padding: 12px 20px;
+  position: sticky;
+  z-index: 2000;
+  top: 0px;             
+}
+
+.navbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.navbar-logo {
+  width: 35px;
+  height: 35px;
+}
+
+.navbar-title {
+  font-size: 18px;
+  color: #f0f0f0;
+  font-weight: 500;
+}
+
+.navbar-search-container {
+  flex: 1;
+  max-width: 400px;
+  background-color: #e0e0e0;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  padding: 6px 12px;
+  gap: 8px;
+}
+
+.search-icon {
+  color: #666;
+  font-size: 14px;
+}
+
+.search-input {
+  border: none;
+  outline: none;
+  background: transparent;
+  width: 100%;
+  font-size: 14px;
+  color: #333;
+}
+
+.create-post-button{
+  border-radius: 20px;
+  background-color: #1e40af;
+  color: #ffffff;
+  align-items: center;
+  border: none;
+  gap: 16px;
+  cursor: pointer;
+  padding: 8px 20px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.login-button {
+  border-radius: 20px;
+  background-color: #1e40af;
+  color: #ffffff;
+  border: none;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 8px 20px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.create-post-button:hover,
+.login-button:hover {
+  background-color: #1e4ed8;    
+}
+
+.create-post-button:active,
+.login-button:active {
+  background-color: #1e40af;       
+  transform: scale(0.97);          
+}

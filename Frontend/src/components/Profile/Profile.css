@@ -1,0 +1,24 @@
+.user-profile-container {
+  background-color: #191a1e;
+  color: #f1f5f9;
+  border-radius: 12px;
+  padding: 50px 30px;
+  width: 100%;
+  box-sizing: border-box;
+  max-width: 750px;
+  margin: 0 auto 24px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.profile-icon {
+  font-size: 100px;
+  color: #9ca3af;
+  margin-bottom: 24px;
+}
+
+.user-info div {
+  margin-bottom: 12px;
+  font-size: 20px;
+  line-height: 1.5;
+}
