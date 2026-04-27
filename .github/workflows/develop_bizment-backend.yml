@@ -7,6 +7,8 @@ on:
   push:
     branches:
       - develop
+    paths:
+      - 'Backend/**'
   workflow_dispatch:
 
 jobs:
@@ -48,17 +50,11 @@ jobs:
         with:
           name: node-app
       
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_E32D4888BC85494CB7ED7971CA09D13E }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_2DC80162C9094784B97C6CB1C946A0D6 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_AADE161D044C43E7AED9CD879ACAD2DF }}
-
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'bizment-backend'
           slot-name: 'Production'
+          publish-profile: ${{ secrets.AZURE_BACKEND_PUBLISH_PROFILE }}
           package: .
