@@ -6,6 +6,9 @@ export const configValidationSchema = Joi.object({
   DB_USERNAME: Joi.string().required(),
   DB_PASSWORD: Joi.string().required(),
   DB_DATABASE: Joi.string().required(),
-  PORT: Joi.number().default(3001),
-  JWT_SECRET: Joi.string().required(),
+  PORT: Joi.number().default(8080),
+  AZURE_STORAGE_CONNECTION_STRING: Joi.string().required(),
+  AZURE_STORAGE_CONTAINER_NAME: Joi.string().default('posts-images'),
+  AZURE_TENANT_ID: Joi.string().required(),
+  AZURE_CLIENT_ID: Joi.string().required(),
 });

@@ -8,10 +8,13 @@ import { configValidationSchema } from './config.schema';
 import { UserModule } from './user/user.module';
 import { TagModule } from './tag/tag.module';
 import { VoteModule } from './vote/vote.module';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
+    CommonModule,
     ConfigModule.forRoot({
+      isGlobal: true,
       envFilePath: ['.env'],
       validationSchema: configValidationSchema,
     }),

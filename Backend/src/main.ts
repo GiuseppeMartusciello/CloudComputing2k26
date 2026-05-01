@@ -10,10 +10,6 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const logger = new Logger();
 
-  const uploadPath = process.env.UPLOAD_PATH || join(__dirname, '..', 'uploads');
-  app.useStaticAssets(uploadPath, {
-    prefix: '/uploads',
-  });
 
   app.enableCors({
     origin: true, // Permette tutte le origini in test

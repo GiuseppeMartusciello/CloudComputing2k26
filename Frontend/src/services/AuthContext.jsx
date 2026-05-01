@@ -1,52 +1,50 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { jwtDecode } from "jwt-decode";
+import { useMsal, useIsAuthenticated } from "@azure/msal-react";
+import { loginRequest } from "../authConfig";
 import { getMe } from "../services/userService";
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { instance, accounts } = useMsal();
+  const isAuthenticated = useIsAuthenticated();
   const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    if (token && isTokenValid(token)) {
-      setIsLoggedIn(true);
-    } else {
-      setIsLoggedIn(false);
-    }
-  }, []);
-
-  const login = (token) => {
-    localStorage.setItem("accessToken", token);
-    setIsLoggedIn(true);
-    window.location.reload();
+  // MSAL Login con Redirect
+  const login = () => {
+    instance.loginRedirect(loginRequest).catch((e) => {
+      console.error("Login failed:", e);
+    });
   };
 
+  // MSAL Logout con Redirect
   const logout = () => {
-    localStorage.removeItem("accessToken");
-    setIsLoggedIn(false);
-    window.location.reload();
+    instance.logoutRedirect().catch((e) => {
+      console.error("Logout failed:", e);
+    });
   };
 
-    useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    if (token) {
+  // Effetto per recuperare il profilo utente dal backend dopo il login
+  useEffect(() => {
+    if (isAuthenticated && accounts.length > 0) {
+      // Possiamo recuperare i dati dell'utente dal token o dal nostro backend
       getMe()
         .then((me) => {
           setUser(me);
-          setIsLoggedIn(true);
         })
-        .catch(() => {
-          logout();
+        .catch((err) => {
+          console.error("Errore recupero profilo:", err);
+          // Se il backend non riconosce ancora l'utente (es. prima volta), lo gestiremo
         });
+    } else {
+      setUser(null);
     }
-  }, []);
+  }, [isAuthenticated, accounts, instance]);
 
   return (
     <AuthContext.Provider
       value={{
-        isLoggedIn,
+        isLoggedIn: isAuthenticated,
         user,
         setUser,
         login,
@@ -60,14 +58,4 @@ export function AuthProvider({ children }) {
 
 export function useAuth() {
   return useContext(AuthContext);
-}
-
-// opzionale: controllo scadenza token
-function isTokenValid(token) {
-  try {
-    const decoded = jwtDecode(token);
-    return decoded.exp * 1000 > Date.now(); // true se non scaduto
-  } catch (e) {
-    return false;
-  }
 }

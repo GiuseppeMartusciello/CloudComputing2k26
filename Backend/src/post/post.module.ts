@@ -8,7 +8,6 @@ import { Tag } from 'src/tag/tag.entity';
 import { TagModule } from 'src/tag/tag.module';
 import { VoteModule } from 'src/vote/vote.module';
 import { Vote } from 'src/vote/vote.entity';
-
 @Module({
   imports: [TypeOrmModule.forFeature([Post,Tag,Vote]), CommentModule,TagModule,VoteModule],
   controllers: [PostController],

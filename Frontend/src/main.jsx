@@ -3,7 +3,11 @@ import { createRoot } from 'react-dom/client'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css'
 import App from './App.jsx'
+import { MsalProvider } from "@azure/msal-react";
+import { msalInstance } from "./msalInstance";
 
 createRoot(document.getElementById('root')).render(
-    <App />
+    <MsalProvider instance={msalInstance}>
+        <App />
+    </MsalProvider>
 )
