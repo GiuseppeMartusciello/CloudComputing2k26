@@ -25,21 +25,13 @@ jobs:
         with:
           node-version: '22.x'
 
-      - name: 'npm install and build'
-        working-directory: ./Backend
-        run: |
-          npm install
-          npm run build
-          mkdir deploy
-          cp -r dist/* deploy/
-          cp package.json deploy/
-          cp package-lock.json deploy/
-
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: node-app
-          path: ./Backend/deploy
+          path: |
+            Backend/
+            !Backend/node_modules/
 
   deploy:
     runs-on: ubuntu-latest
