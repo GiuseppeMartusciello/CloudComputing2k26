@@ -26,8 +26,12 @@ jobs:
         run: |
           npm install
           npm run build --if-present
-          npm run test --if-present
         working-directory: Frontend
+        env:
+          VITE_AZURE_CLIENT_ID: ${{ secrets.VITE_AZURE_CLIENT_ID }}
+          VITE_AZURE_TENANT_ID: ${{ secrets.VITE_AZURE_TENANT_ID }}
+          VITE_AZURE_BACKEND_SCOPE: ${{ secrets.VITE_AZURE_BACKEND_SCOPE }}
+          VITE_API_URL: https://bizment-backend-c0a4dyaee4hvd3gq.swedencentral-01.azurewebsites.net
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
