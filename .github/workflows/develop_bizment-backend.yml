@@ -30,15 +30,16 @@ jobs:
         run: |
           npm install
           npm run build
+          mkdir deploy
+          cp -r dist/* deploy/
+          cp package.json deploy/
+          cp package-lock.json deploy/
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: node-app
-          path: |
-            ./Backend/dist
-            ./Backend/package.json
-            ./Backend/package-lock.json
+          path: ./Backend/deploy
 
   deploy:
     runs-on: ubuntu-latest
