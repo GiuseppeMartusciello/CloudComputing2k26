@@ -6,6 +6,7 @@ on:
       - develop
     paths:
       - 'Frontend/**'
+      - '.github/workflows/develop_bizment-frontend.yml'
   workflow_dispatch:
 
 jobs:
