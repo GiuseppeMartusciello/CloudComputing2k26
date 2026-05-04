@@ -8,14 +8,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { Post } from './post.entity';
 import { User } from 'src/user/user.entity';
-import * as path from 'path';
-import * as fs from 'fs';
 import { TagService } from 'src/tag/tag.service';
 import { Vote, VoteType } from 'src/vote/vote.entity';
 import { SearchDto } from './dto/search.dto';
 import { PostResponseDto } from './dto/post-response.dto';
 import { StorageService } from 'src/common/storage.service';
-import { extname } from 'path';
+import { Cache } from 'cache-manager';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Inject } from '@nestjs/common';
 
 @Injectable()
 export class PostService {
@@ -28,7 +28,10 @@ export class PostService {
 
     private tagService: TagService,
     private storageService: StorageService,
-  ) {}
+
+    @Inject(CACHE_MANAGER)
+    private cacheManager: Cache,
+  ) { }
 
   async createPost(
     user: User,
@@ -52,6 +55,9 @@ export class PostService {
     });
 
     const newPost = await this.postRepository.save(post);
+
+    // Svuotiamo la cache dei feed dato che c'è un nuovo post
+    await this.clearPostCache();
 
     return {
       id: newPost.id,
@@ -82,6 +88,14 @@ export class PostService {
     limit = 10,
     offset = 0,
   ): Promise<{ posts: PostResponseDto[]; total: number }> {
+    const cacheKey = `posts_all_${limit}_${offset}`;
+
+    // Caching solo per la vista pubblica (senza userId)
+    if (!userId) {
+      const cached = await this.cacheManager.get<{ posts: PostResponseDto[]; total: number }>(cacheKey);
+      if (cached) return cached;
+    }
+
     const [posts, total] = await this.postRepository.findAndCount({
       relations: ['author', 'tags', 'comments', 'votes'],
       order: { createdAt: 'DESC' },
@@ -90,10 +104,24 @@ export class PostService {
     });
 
     const formatted = await this.formatPosts(posts, userId);
-    return { posts: formatted, total };
+    const result = { posts: formatted, total };
+
+    if (!userId) {
+      await this.cacheManager.set(cacheKey, result, 600000); // 10 minuti
+    }
+
+    return result;
   }
 
   async getById(postId: string, userId?: string): Promise<PostResponseDto> {
+    const cacheKey = `post_single_${postId}`;
+
+    // Cache solo per ospiti (vista pubblica)
+    if (!userId) {
+      const cached = await this.cacheManager.get<PostResponseDto>(cacheKey);
+      if (cached) return cached;
+    }
+
     const post = await this.postRepository.findOne({
       where: { id: postId },
       relations: [
@@ -109,6 +137,11 @@ export class PostService {
     if (!post) throw new NotFoundException();
 
     const formatted = await this.formatSinglePost(post, userId);
+
+    if (!userId) {
+      await this.cacheManager.set(cacheKey, formatted, 3600000); // 1 ora per i post singoli
+    }
+
     return formatted;
   }
 
@@ -225,11 +258,16 @@ export class PostService {
   }
 
   async getTodayPost(): Promise<PostResponseDto[]> {
+    const cacheKey = 'posts_today';
+    const cached = await this.cacheManager.get<PostResponseDto[]>(cacheKey);
+    if (cached) return cached;
+
     const allValidPosts = await this.getAll();
+    if (allValidPosts.length === 0) return [];
 
     const dayOfYear = Math.floor(
       (Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) /
-        (1000 * 60 * 60 * 24),
+      (1000 * 60 * 60 * 24),
     );
 
     const postsPerDay = 5;
@@ -241,6 +279,7 @@ export class PostService {
       dailyPosts.push(allValidPosts[index]);
     }
 
+    await this.cacheManager.set(cacheKey, dailyPosts, 86400000); // Cache per 24 ore
     return dailyPosts;
   }
 
@@ -266,6 +305,16 @@ export class PostService {
       id: id,
       author: { id: userId } as User,
     });
+
+    // Svuotiamo la cache
+    await this.clearPostCache();
+  }
+
+  // Helper per pulire la cache dei post
+  async clearPostCache() {
+    // Nota: con molti store redis si può fare reset() o eliminare chiavi per pattern
+    // In questo caso facciamo un reset totale della cache per semplicità
+    await this.cacheManager.clear();
   }
 
 

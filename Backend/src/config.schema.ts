@@ -11,4 +11,7 @@ export const configValidationSchema = Joi.object({
   AZURE_STORAGE_CONTAINER_NAME: Joi.string().default('posts-images'),
   AZURE_TENANT_ID: Joi.string().required(),
   AZURE_CLIENT_ID: Joi.string().required(),
+  REDIS_HOST: Joi.string().required(),
+  REDIS_PORT: Joi.number().default(6380),
+  REDIS_PASSWORD: Joi.string().required(),
 });

@@ -9,6 +9,8 @@ import { UserModule } from './user/user.module';
 import { TagModule } from './tag/tag.module';
 import { VoteModule } from './vote/vote.module';
 import { CommonModule } from './common/common.module';
+import { CacheModule } from '@nestjs/cache-manager';
+import { redisStore } from 'cache-manager-redis-yet';
 
 @Module({
   imports: [
@@ -17,6 +19,22 @@ import { CommonModule } from './common/common.module';
       isGlobal: true,
       envFilePath: ['.env'],
       validationSchema: configValidationSchema,
+    }),
+    CacheModule.registerAsync({
+      isGlobal: true,
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        store: await redisStore({
+          socket: {
+            host: configService.get('REDIS_HOST'),
+            port: configService.get('REDIS_PORT'),
+            tls: configService.get('REDIS_PORT') === 6380,
+          },
+          password: configService.get('REDIS_PASSWORD'),
+          ttl: 600, // 10 minuti di cache default
+        }),
+      }),
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
