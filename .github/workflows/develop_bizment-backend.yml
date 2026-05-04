@@ -26,13 +26,18 @@ jobs:
         with:
           node-version: '22.x'
 
+      - name: Prepare staging directory
+        run: |
+          mkdir staging
+          cp -r Backend/. staging/
+          rm -rf staging/node_modules
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: node-app
-          path: |
-            Backend/
-            !Backend/node_modules/
+          path: staging/
+          # Usiamo Backend/ per assicurarci che il contenuto sia nella root dell'artifact
 
   deploy:
     runs-on: ubuntu-latest

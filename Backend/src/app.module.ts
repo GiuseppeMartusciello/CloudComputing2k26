@@ -29,10 +29,15 @@ import { redisStore } from 'cache-manager-redis-yet';
           socket: {
             host: configService.get('REDIS_HOST'),
             port: configService.get('REDIS_PORT'),
-            tls: configService.get('REDIS_PORT') === 6380,
+            tls: configService.get('REDIS_PORT') === 6380 ? { rejectUnauthorized: false } : false,
+            keepAlive: 10000, // Invia un ping ogni 10 secondi per non far cadere la linea
+            reconnectStrategy: (retries) => {
+              // Prova a riconnettersi ogni 1s, fino a un massimo di 3s tra i tentativi
+              return Math.min(retries * 1000, 3000);
+            },
           },
           password: configService.get('REDIS_PASSWORD'),
-          ttl: 600, // 10 minuti di cache default
+          ttl: 600,
         }),
       }),
     }),
