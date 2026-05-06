@@ -14,12 +14,12 @@ export async function getTodayPosts(limit = 10, offset = 0) {
 
 export async function getMyUpvotedPosts(limit = 10, offset = 0) {
   const query = new URLSearchParams({ limit: limit.toString(), offset: offset.toString() });
-  console.log("Ris: ",await apiFetch(`/post/my-upvoted-posts?${query.toString()}`));
   return await apiFetch(`/post/my-upvoted-posts?${query.toString()}`);
 }
 
-export async function getMyPosts() {
-  return await apiFetch(`/post/mine`);
+export async function getMyPosts(limit = 10, offset = 0) {
+  const query = new URLSearchParams({ limit: limit.toString(), offset: offset.toString() });
+  return await apiFetch(`/post/mine?${query.toString()}`);
 }
 
 export async function getPostById(postId) {

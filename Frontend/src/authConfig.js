@@ -7,6 +7,7 @@ export const msalConfig = {
         clientId: import.meta.env.VITE_AZURE_CLIENT_ID, // ID Applicazione (client) di "Bizment-Frontend"
         authority: `https://login.microsoftonline.com/${import.meta.env.VITE_AZURE_TENANT_ID}`, // ID della directory (tenant)
         redirectUri: window.location.origin, // Prende l'URL corrente (localhost o Azure)
+        postLogoutRedirectUri: window.location.origin,
     },
     cache: {
         cacheLocation: "sessionStorage", // Dove salvare il token

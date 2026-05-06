@@ -2,11 +2,16 @@ import { FaUserCircle } from "react-icons/fa";
 import "./Profile.css";
 import { useAuth } from "../../services/AuthContext";
 
-export default function Profile({ }) {
+export default function Profile() {
   const { user, isLoggedIn } = useAuth();
 
-  if(!isLoggedIn)
-    return ;
+  if (!isLoggedIn) {
+    return null;
+  }
+
+  if (!user) {
+    return <div>Caricamento profilo...</div>;
+  }
 
   return (
     <div className="user-profile-container">
@@ -20,9 +25,9 @@ export default function Profile({ }) {
           <strong>Email:</strong> {user.email}
         </div>
         <div>
-          <strong>Data di nascita:</strong> {user.birthDate}
+          <strong>Data di nascita:</strong> {user.birthDate || "Non specificata"}
         </div>
       </div>
     </div>
   );
-}
+}

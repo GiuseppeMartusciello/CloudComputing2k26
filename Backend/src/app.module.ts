@@ -11,6 +11,7 @@ import { VoteModule } from './vote/vote.module';
 import { CommonModule } from './common/common.module';
 import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-yet';
+import { createClient } from 'redis';
 
 @Module({
   imports: [
@@ -24,22 +25,21 @@ import { redisStore } from 'cache-manager-redis-yet';
       isGlobal: true,
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => ({
-        store: await redisStore({
-          socket: {
-            host: configService.get('REDIS_HOST'),
-            port: configService.get('REDIS_PORT'),
-            tls: configService.get('REDIS_PORT') === 6380 ? ({ rejectUnauthorized: false } as any) : false,
-            keepAlive: 10000, // Invia un ping ogni 10 secondi per non far cadere la linea
-            reconnectStrategy: (retries) => {
-              // Prova a riconnettersi ogni 1s, fino a un massimo di 3s tra i tentativi
-              return Math.min(retries * 1000, 3000);
-            },
-          },
-          password: configService.get('REDIS_PASSWORD'),
+      useFactory: async (configService: ConfigService) => {
+        const store = await redisStore({
+          url: `rediss://:${configService.get('REDIS_PASSWORD')}@${configService.get('REDIS_HOST')}:${configService.get('REDIS_PORT')}`,
           ttl: 600,
-        }),
-      }),
+        });
+
+        // Gestore errori minimo per non far crashare l'app
+        if ((store as any).client) {
+          (store as any).client.on('error', (err: any) => {
+            console.warn('Redis connection issue (handled):', err.message);
+          });
+        }
+
+        return { store };
+      },
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],

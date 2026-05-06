@@ -17,9 +17,12 @@ export function AuthProvider({ children }) {
     });
   };
 
-  // MSAL Logout con Redirect
+  // MSAL Logout con Redirect alla Home
   const logout = () => {
-    instance.logoutRedirect().catch((e) => {
+    instance.logoutRedirect({
+      postLogoutRedirectUri: "/",
+      account: accounts[0],
+    }).catch((e) => {
       console.error("Logout failed:", e);
     });
   };
