@@ -1,7 +1,7 @@
 import { msalInstance } from "../msalInstance";
 import { loginRequest } from "../authConfig";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "https://bizment-backend-c0a4dyaee4hvd3gq.swedencentral-01.azurewebsites.net";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "https://bizment-apimanagement.azure-api.net";
 
 export async function apiFetch(url, options = {}) {
   let token = null;
