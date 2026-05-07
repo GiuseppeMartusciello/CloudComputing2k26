@@ -1,0 +1,39 @@
+.user-menu {
+  position: relative;
+  display: inline-block;
+  z-index: 2000;
+}
+
+.icon-button {
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+}
+
+.dropdown {
+  position: absolute;
+  right: 0;
+  margin-top: 8px;
+  background-color: #1e1f22;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 8px 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 9999 !important;
+  min-width: 120px;
+}
+
+.dropdown button {
+  background: none;
+  border: none;
+  color: #fff;
+  width: 100%;
+  text-align: left;
+  padding: 10px 16px;
+  cursor: pointer;
+}
+
+.dropdown button:hover {
+  background-color: #2b2d31;
+}

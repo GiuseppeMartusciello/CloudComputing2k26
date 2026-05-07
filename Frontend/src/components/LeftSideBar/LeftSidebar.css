@@ -1,0 +1,59 @@
+.left-sidebar {
+  background-color: #191a1e;
+  border-radius: 16px;
+  padding: clamp(8px, 2vw, 16px) clamp(0px, 2vw, 24px);
+  width: 80%;
+  color: #ccc;
+  font-family: "Segoe UI", sans-serif;
+  position: sticky;
+  top: 80px;
+  align-self: start;
+  font-size: clamp(13px, 1.5vw, 16px);
+}
+
+@media (max-width: 768px) {
+  .left-sidebar {
+    width: 100%;
+  }
+}
+
+.menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 2vw, 16px);
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border-radius: 12px;
+  margin-top: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.menu-item span {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+  font-size: clamp(13px, 1.5vw, 15px);
+}
+
+.menu-item:hover {
+  background-color: #2b2d31;
+}
+
+.menu-item.selected {
+  background-color: #2b2d31;
+  color: white;
+}
+
+.icon {
+  font-size: clamp(16px, 2.2vw, 20px);
+}

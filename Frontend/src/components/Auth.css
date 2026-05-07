@@ -1,0 +1,153 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(17, 19, 21, 0.6); 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.auth-modal {
+  background-color: #1e1f22;
+  padding: 32px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
+  color: #f0f0f0;
+  font-family: 'Inter', sans-serif;
+}
+
+.auth-modal .top{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin-bottom: 24px;
+}
+
+.auth-modal h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 25px 0px;
+}
+
+.auth-modal input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 16px;
+  background-color: #2b2d31;
+  border: 1px solid #444;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 14px;
+}
+
+.auth-modal .close-button {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 8px 16px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #f0f0f0;
+  cursor: pointer;
+}
+
+.auth-modal .close-button:hover {
+  color: #767777;
+}
+
+.auth-modal form > button:not(.password-toggle-button) {
+  width: 100%;
+  padding: 12px;
+  background-color: #2563eb;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  color: #111315;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  margin-bottom: 10px;
+}
+.auth-modal form > button:not(.password-toggle-button):hover {
+  background-color: #1e4ed8;    
+}
+
+.auth-modal form > button:not(.password-toggle-button):active {
+  background-color: #1e40af;       
+  transform: scale(0.97);          
+}
+
+.logo {
+  display: inline-block;
+  width: 150px;
+  height: 150px;
+}
+
+.switch-auth{
+  margin: 20px;
+  margin-bottom: 0px;
+}
+
+.auth-subtitle {
+  text-align: center;
+  color: #a0a0a0;
+  font-size: 14px;
+  margin-bottom: 32px;
+}
+
+.auth-methods {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.microsoft-login-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px;
+  background-color: #ffffff;
+  color: #2f2f2f;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.microsoft-login-button:hover {
+  background-color: #f7f7f7;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.ms-icon {
+  font-size: 20px;
+  color: #00a4ef; /* Microsoft Blue */
+}
+
+.auth-footer {
+  text-align: center;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #333;
+}
+
+.auth-footer p {
+  font-size: 12px;
+  color: #666;
+  line-height: 1.4;
+}
