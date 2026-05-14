@@ -47,7 +47,7 @@ import { createClient } from 'redis';
       useFactory: async (configService: ConfigService) => ({
         type: 'postgres',
         autoLoadEntities: true,
-        synchronize: true,
+        synchronize: false,
         host: configService.get('DB_HOST'),
         port: configService.get('DB_PORT'),
         username: configService.get('DB_USERNAME'),
@@ -56,12 +56,12 @@ import { createClient } from 'redis';
         ssl: configService.get('DB_HOST')?.includes('azure.com') ? { rejectUnauthorized: false } : false,
       }),
     }),
-      AuthModule,
-      PostModule,
-      UserModule,
-      TagModule,
-      VoteModule,
-      CommentModule,
+    AuthModule,
+    PostModule,
+    UserModule,
+    TagModule,
+    VoteModule,
+    CommentModule,
   ],
 })
-export class AppModule {}
+export class AppModule { }

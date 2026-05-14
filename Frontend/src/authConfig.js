@@ -5,7 +5,7 @@
 export const msalConfig = {
     auth: {
         clientId: import.meta.env.VITE_AZURE_CLIENT_ID, // ID Applicazione (client) di "Bizment-Frontend"
-        authority: `https://login.microsoftonline.com/${import.meta.env.VITE_AZURE_TENANT_ID}`, // ID della directory (tenant)
+        authority: `https://login.microsoftonline.com/common`, // Permette l'accesso a tutti (Multitenant + Personal)
         redirectUri: window.location.origin, // Prende l'URL corrente (localhost o Azure)
         postLogoutRedirectUri: window.location.origin,
     },

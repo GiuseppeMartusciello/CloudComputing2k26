@@ -22,11 +22,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         cache: true,
         rateLimit: true,
         jwksRequestsPerMinute: 5,
-        jwksUri: `https://login.microsoftonline.com/${tenantId}/discovery/v2.0/keys`,
+        jwksUri: `https://login.microsoftonline.com/common/discovery/v2.0/keys`,
       }),
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       audience: clientId,
-      issuer: `https://login.microsoftonline.com/${tenantId}/v2.0`,
+      // issuer: `https://login.microsoftonline.com/${tenantId}/v2.0`, // Rimosso per supportare Multitenant
       algorithms: ['RS256'],
     });
   }
