@@ -59,6 +59,8 @@ export default function CreatePostModal({ showModal, onClickClose, onCreate }) {
 
     if (!image) {
       newErrors.image = "Devi selezionare un'immagine.";
+    } else if (image.size > 15 * 1024 * 1024) {
+      newErrors.image = "Il file è troppo grande. Il limite è 15MB.";
     }
 
     if (tags.length > 0) {

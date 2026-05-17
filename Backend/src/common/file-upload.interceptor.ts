@@ -18,7 +18,7 @@ export function FileUploadInterceptor() {
         cb(null, true);
       },
       limits: {
-        fileSize: 5 * 1024 * 1024, // Limite opzionale di 5MB
+        fileSize: 15 * 1024 * 1024, // Limite aumentato a 15MB
       },
     }),
   );
